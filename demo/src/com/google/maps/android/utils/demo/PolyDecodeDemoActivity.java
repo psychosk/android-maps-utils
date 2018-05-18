@@ -16,8 +16,13 @@
 
 package com.google.maps.android.utils.demo;
 
+import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
@@ -25,14 +30,41 @@ import java.util.List;
 
 public class PolyDecodeDemoActivity extends BaseDemoActivity {
 
-    private final static String LINE = "rvumEis{y[}DUaBGu@EqESyCMyAGGZGdEEhBAb@DZBXCPGP]Xg@LSBy@E{@SiBi@wAYa@AQGcAY]I]KeBm@_Bw@cBu@ICKB}KiGsEkCeEmBqJcFkFuCsFuCgB_AkAi@cA[qAWuAKeB?uALgB\\eDx@oBb@eAVeAd@cEdAaCp@s@PO@MBuEpA{@R{@NaAHwADuBAqAGE?qCS[@gAO{Fg@qIcAsCg@u@SeBk@aA_@uCsAkBcAsAy@AMGIw@e@_Bq@eA[eCi@QOAK@O@YF}CA_@Ga@c@cAg@eACW@YVgDD]Nq@j@}AR{@rBcHvBwHvAuFJk@B_@AgAGk@UkAkBcH{@qCuAiEa@gAa@w@c@o@mA{Ae@s@[m@_AaCy@uB_@kAq@_Be@}@c@m@{AwAkDuDyC_De@w@{@kB_A}BQo@UsBGy@AaA@cLBkCHsBNoD@c@E]q@eAiBcDwDoGYY_@QWEwE_@i@E}@@{BNaA@s@EyB_@c@?a@F}B\\iCv@uDjAa@Ds@Bs@EyAWo@Sm@a@YSu@c@g@Mi@GqBUi@MUMMMq@}@SWWM]C[DUJONg@hAW\\QHo@BYIOKcG{FqCsBgByAaAa@gA]c@I{@Gi@@cALcEv@_G|@gAJwAAUGUAk@C{Ga@gACu@A[Em@Sg@Y_AmA[u@Oo@qAmGeAeEs@sCgAqDg@{@[_@m@e@y@a@YIKCuAYuAQyAUuAWUaA_@wBiBgJaAoFyCwNy@cFIm@Bg@?a@t@yIVuDx@qKfA}N^aE@yE@qAIeDYaFBW\\eBFkANkANWd@gALc@PwAZiBb@qCFgCDcCGkCKoC`@gExBaVViDH}@kAOwAWe@Cg@BUDBU`@sERcCJ{BzFeB";
+    private final static String LINE = "y`acDkngmMN}C??d@S??DcAD_ABg@?ADq@PmDHcBJyBX{E??YYKIOGEAC?MCkSvMULy@l@oAr@a@TQHkK|FeBbAm@`@aCxAmAv@aAj@o@`@??[T[w@a@}@g@qAqC_HCGwDcJIYEOGQ]{@Sg@aCaGu@gBCEgGkOiA}CgAsCa@gA{AwD]w@k@sAiByEEKUm@oBcGw@_B_@u@w@kBm@aA??U{@Yu@q@eBm@_Bg@yAQk@Ki@E]AOEs@Aq@@{B@eD?cC@mC@[@eA@eA@sH?uH?_A@kB?{CAc@?SAM?OCQEQEQIUIOe@gAw@iBa@_ASc@gAqBs@gB{@qB}@sBcB{Dk@sAWi@Sc@MYu@}Aw@_Bm@kAM[Um@Ma@i@kBGQEQEMGKIKKMKKQKKKMGmCqAsFuDgA}@sFeEyAuAkCuCeAwAU_@OYS_@]s@c@aAoC}GwBsF[_A[aAyBgIk@eB_BqDaBqDiAkEWeAAEi@wBCQOw@Ou@Qy@Q{@_@}A[_Bk@wCm@uCOo@Q{@g@yBq@}C??SJIBUHIBI?_@@w@By@@mA@eA@gDFg@BE?CAyAc@wGqB??]~AQ~@WxACLCNMd@?D??IBKBK@QBA@_@DaFp@kBVI@oC^YD_AN{@Lm@FE@s@HyC`@_AJ???D?FAD?DAD?DADAFCHAJCHEHEHEHGHGFEBA@CBC@C@A@C@`@dAj@`BX|@n@lBBJhBhF??@Az@a@";
+    //private final static LatLng POINT = new LatLng(26.880414000070328,75.73751626002208);
+
+    private static final LatLng[] POINTS = {new LatLng(26.880414000070328,75.73751626002208),
+            new LatLng(26.8797065,75.7503638),
+            new LatLng(26.8900626,75.7555818),
+            new LatLng(26.9026875,75.7748333),
+            new LatLng(26.909612,75.7813997),
+            new LatLng(26.9167862,75.7853879),
+            new LatLng(26.9201592,75.7920762)};
+
 
     @Override
     protected void startDemo() {
+
+
         List<LatLng> decodedPath = PolyUtil.decode(LINE);
-
         getMap().addPolyline(new PolylineOptions().addAll(decodedPath));
+        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(POINTS[0], 12));
+        for (int i = 0; i < POINTS.length; ++i){
+            int result = PolyUtil.locationIndexOnEdgeOrPath(POINTS[i], decodedPath,false,false,100);
+            if (result==-1){
+                MarkerOptions mo = new MarkerOptions().position(POINTS[i]);
+                Marker m = getMap().addMarker(mo);
+                m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            } else if (result>-1){
+                MarkerOptions mo = new MarkerOptions().position(POINTS[i]);
+                Marker m = getMap().addMarker(mo);
+                m.setTitle(String.valueOf(result));
+                m.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }
 
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-33.8256, 151.2395), 12));
+
+            Toast.makeText(this,"Result is "+result,Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
